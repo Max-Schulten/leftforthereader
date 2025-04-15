@@ -75,7 +75,6 @@ def scrape_definition(page_url, session = None):
         logging.info(f"No term found in title on {page_url}.")
         return None, None
     
-    
     # Track content read
     content = []
     current = start.find_next_sibling()
@@ -100,12 +99,12 @@ def scrape_definition(page_url, session = None):
     # Return concatenated
     return term, "\n".join(content).strip()
 
-def scrape_definition_pages(start_url):
+def scrape_definition_pages(start_url, page_count = 0):
     # Initialization
     current_url = start_url
     visited = set()
     results = {'links': [], 'terms': [], 'defs': []}
-    page_count = 0
+    page_count
     
     # Begin session with the server
     session = requests.Session()
@@ -173,4 +172,7 @@ def scrape_definition_pages(start_url):
     # Save final
     return save_results(results, checkpoint_iter=page_count, checkpoint_url=current_url)
 
-scrape_definition_pages(home_url)
+# scrape_definition_pages(home_url) # Try 1 got first 45 pages
+
+# Resuming from last checkpoint url
+scrape_definition_pages("https://proofwiki.org//w/index.php?title=Special:AllPages&from=Lowest+Common+Multiple+of+Integers&namespace=102",page_count=45)
