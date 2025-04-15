@@ -172,4 +172,4 @@ def scrape_definition_pages(start_url, page_count = 0):
     # Save final
     return save_results(results, checkpoint_iter=page_count, checkpoint_url=current_url)
 
-scrape_definition_pages(home_url)
+scrape_definition_pages("https://proofwiki.org//w/index.php?title=Special:AllPages&from=Hour+Point&namespace=102", page_count=36)
