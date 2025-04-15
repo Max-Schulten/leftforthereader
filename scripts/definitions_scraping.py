@@ -175,4 +175,4 @@ def scrape_definition_pages(start_url, page_count = 0):
 # scrape_definition_pages(home_url) # Try 1 got first 45 pages
 
 # Resuming from last checkpoint url
-scrape_definition_pages("https://proofwiki.org//w/index.php?title=Special:AllPages&from=Lowest+Common+Multiple+of+Integers&namespace=102",page_count=45)
+scrape_definition_pages(home_url)
