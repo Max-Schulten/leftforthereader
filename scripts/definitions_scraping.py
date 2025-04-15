@@ -104,7 +104,7 @@ def scrape_definition_pages(start_url, page_count = 0):
     current_url = start_url
     visited = set()
     results = {'links': [], 'terms': [], 'defs': []}
-    page_count
+    page_count = 0
     
     # Begin session with the server
     session = requests.Session()
@@ -172,7 +172,4 @@ def scrape_definition_pages(start_url, page_count = 0):
     # Save final
     return save_results(results, checkpoint_iter=page_count, checkpoint_url=current_url)
 
-# scrape_definition_pages(home_url) # Try 1 got first 45 pages
-
-# Resuming from last checkpoint url
 scrape_definition_pages(home_url)

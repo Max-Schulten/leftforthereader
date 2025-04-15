@@ -26,7 +26,7 @@ RUN mkdir build && cd build && \
 RUN mkdir /app/models
 
 RUN cd /app/models && \
-    wget -q https://huggingface.co/QuantFactory/Qwen2.5-Math-1.5B-Instruct-GGUF/resolve/main/Qwen2.5-Math-1.5B-Instruct.Q8_0.gguf
+    wget -q https://huggingface.co/QuantFactory/Qwen2.5-Math-1.5B-Instruct-GGUF/resolve/main/Qwen2.5-Math-1.5B-Instruct.Q5_0.gguf
 
 EXPOSE 8080
 
