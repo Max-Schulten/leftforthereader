@@ -35,7 +35,7 @@ def save_results(results, checkpoint_iter, checkpoint_url):
     definitions_df = pd.DataFrame(definitions)
 
     # Dir
-    out_dir = "E:/leftforthereader/data/proof_wiki_definitions"
+    out_dir = "./data/proof_wiki_definitions"
     
     # create dir if not already existi
     os.makedirs(out_dir, exist_ok=True)
