@@ -104,8 +104,6 @@ def scrape_definition_pages(start_url, page_count = 0):
     current_url = start_url
     visited = set()
     results = {'links': [], 'terms': [], 'defs': []}
-    page_count = 0
-    
     # Begin session with the server
     session = requests.Session()
 
