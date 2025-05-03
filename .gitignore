@@ -1,4 +1,5 @@
 venv
 data
-scraper.log
 __pycache__
+*.log
+vectordb
