@@ -16,12 +16,9 @@ try:
 except Exception as e:
     print(f"No existing 'thms' collection to delete: {e}")
 
-embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="sentence-transformers/all-mpnet-base-v2")
-
 # Get/Create Definitions collections
 defs_collection = client.get_or_create_collection(
-    name = "defs",
-    embedding_function=embedding_fn
+    name = "defs"
 )
 
 # Read in definitions csv
@@ -56,7 +53,6 @@ for start in range(0, len(defs_df), 500):
 # Create theorems collection
 thms_collection = client.get_or_create_collection(
     name='thms',
-    embedding_function=embedding_fn
 )
 
 # Read in thms csv
