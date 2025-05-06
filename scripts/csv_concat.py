@@ -27,4 +27,4 @@ def concat_csv(dir, outdir, pattern = ".*"):
         return False
         
 
-concat_csv("./data/proof_wiki_definitions", "./final_data/proof_wiki_definitions.csv", pattern = ".*.csv$")
+concat_csv("./data/proof_wiki_theorems", "./final_data/proof_wiki_theorems.csv", pattern = ".*.csv$")
