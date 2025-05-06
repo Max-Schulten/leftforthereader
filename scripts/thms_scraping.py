@@ -131,7 +131,7 @@ def scrape_theorem_pages(start_url, page_count = 0):
     visited = set()
     results = {'links': [], 'thms': [], 'proofs': []}
     # Begin session with the server
-    session = requests.Session()
+    session = requests.session()
 
     while current_url and current_url not in visited:
         visited.add(current_url)
@@ -146,6 +146,13 @@ def scrape_theorem_pages(start_url, page_count = 0):
         except requests.RequestException as e:
             logging.warning(f"Failed to fetch {current_url}: {e}")
             break
+        except requests.exceptions.ConnectionError as e:
+            logging.warning(f'Ran into an exception: {e} on url: {current_url}')
+            session.close()
+            time.sleep(1)
+            session = requests.session()
+            response = session.get(current_url)
+            response.raise_for_status()
 
         # Prepare page for parsing
         home_html = BeautifulSoup(response.text, 'html.parser')
@@ -159,7 +166,15 @@ def scrape_theorem_pages(start_url, page_count = 0):
                     def_link = base_url + link['href']
                     
                     # Get definition and term from link
-                    thm, proof = scrape_theorem(def_link, session)
+                    try:
+                        thm, proof = scrape_theorem(def_link, session)
+                    except requests.exceptions.ConnectionError as e:
+                        logging.warning(f'Ran into an exception: {e} on url: f{def_link}')
+                        session.close()
+                        time.sleep(1)
+                        session = requests.session()
+                        thm, proof = scrape_theorem(def_link, session)
+                         
                     # Select random sleep time to limit rate
                     time.sleep(random.uniform(0.5, 1.5))
                     
@@ -195,4 +210,4 @@ def scrape_theorem_pages(start_url, page_count = 0):
     # Save final
     return save_results(results, checkpoint_iter=page_count, checkpoint_url=current_url)
 
-scrape_theorem_pages(home_url)
+scrape_theorem_pages('https://proofwiki.org//w/index.php?title=Special:AllPages&from=Lower+and+Upper+Bounds+for+Sequences', page_count = 78)
