@@ -26,12 +26,12 @@ RUN mkdir build && cd build && \
 RUN mkdir /app/models
 
 RUN cd /app/models && \
-    wget -q https://huggingface.co/QuantFactory/Qwen2.5-Math-1.5B-Instruct-GGUF/resolve/main/Qwen2.5-Math-1.5B-Instruct.Q5_0.gguf
+    wget -q https://huggingface.co/bartowski/Qwen2.5-Math-1.5B-Instruct-GGUF/resolve/main/Qwen2.5-Math-1.5B-Instruct-Q5_K_S.gguf
 
 EXPOSE 8080
 
 CMD ["/app/llama.cpp/build/bin/llama-server", \
-     "-m", "/app/models/Qwen2.5-Math-1.5B-Instruct.Q8_0.gguf", \
+     "-m", "/app/models/Qwen2.5-Math-1.5B-Instruct-Q5_K_S.gguf", \
      "-c", "2048", \
      "--host", "0.0.0.0", \
      "--port", "8080"]
