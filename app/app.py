@@ -3,12 +3,17 @@ from pydantic import BaseModel
 import chromadb
 import utils
 import uvicorn
+import ai
+
 
 # Initialize fast api application
 app = FastAPI()
 
+# Load llm
+model = ai.load_model()
+
 # Initialize the vector database using persistent vectordb
-client = chromadb.PersistentClient(path = "vectordb")
+client = chromadb.PersistentClient(path = "app/vectordb")
 
 def_collection = client.get_collection("defs")
 
@@ -17,30 +22,42 @@ thm_collection = client.get_collection("thms")
 # Query structure
 class Query(BaseModel):
     prompt: str
+    temp: float = 0
+    messages: list | None = None
+
+@app.get('/')
+def read_root():
+    return {
+        "status": "OK",
+        "model": ai.get_model()
+    }
 
 # Main endpoint for responding to queries
 @app.post('/query')
-async def query(prompt: Query):
+async def query(query: Query):
 
     defs = def_collection.query(
-        query_texts=[prompt.prompt],
-        n_results=2
+        query_texts=[query.prompt],
+        n_results=1
     )
     
     thms = thm_collection.query(
-        query_texts=[prompt.prompt],
-        n_results=2
+        query_texts=[query.prompt],
+        n_results=1
     )
 
     context = utils.create_context_window(thms=thms, defs=defs)
     
-    return(
-        {
-            "prompt": prompt.prompt,
-            "context": context
-        }
-    )
+    params = {
+        "prompt": query.prompt,
+        "rag_context": context,
+        "model": model,
+        "messages": query.messages
+    }
+
+    response = ai.query(**params)
     
+    return response
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
