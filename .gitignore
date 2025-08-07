@@ -7,3 +7,4 @@ vectordb
 .venv
 *.gguf
 .env
+.DS_Store
