@@ -3,8 +3,13 @@ import requests
 import re
 import time
 import os
+import dotenv
+
+dotenv.load_dotenv()
 
 API_URL = os.getenv("API_URL", "http://localhost:8000/")
+API_KEY = os.getenv("API_KEY")
+
 st.set_page_config(page_title="L4TR", page_icon="📖")
 
 model_name = None

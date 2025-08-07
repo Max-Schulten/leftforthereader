@@ -1,13 +1,20 @@
 from fastapi import FastAPI
+from fastapi.security import APIKeyHeader
 from pydantic import BaseModel
 import chromadb
 import utils
 import uvicorn
 import ai
-
+import os
+import dotenv
 
 # Initialize fast api application
 app = FastAPI()
+
+dotenv.load_dotenv()
+
+# Get apikeys
+keys = os.getenv("API_KEYS", "").split(' ')
 
 # Load llm
 model = ai.load_model()
