@@ -29,14 +29,14 @@ def estimate_tokens(messages: list, model: Llama):
     
 
 def query(prompt: str, rag_context: str, model: Llama, temp: float = 0, messages: list | None = None, max_response_tokens = 1024, max_context_tokens: int = 3500) -> dict:
-
+    
     if messages is None:
         messages = [copy.deepcopy(SYSTEM_PROMPT)]
     else:
         messages = messages.copy()
         
     messages.append({"role": "user", "content": f"{rag_context}\n\nQuestion: {prompt}"})
-    
+
     while estimate_tokens(messages, model) > max_context_tokens and len(messages) > 3:
         messages.pop(1) # Remove User Message
         messages.pop(1) # Remove Assistant message

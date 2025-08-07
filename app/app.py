@@ -1,5 +1,5 @@
-from fastapi import FastAPI
-from fastapi.security import APIKeyHeader
+from fastapi import FastAPI, Security, HTTPException, status
+from fastapi.security import APIKeyHeader, APIKeyQuery
 from pydantic import BaseModel
 import chromadb
 import utils
@@ -14,7 +14,10 @@ app = FastAPI()
 dotenv.load_dotenv()
 
 # Get apikeys
-keys = os.getenv("API_KEYS", "").split(' ')
+API_KEYS = os.getenv("API_KEYS", "").split(' ')
+
+api_key_query = APIKeyQuery(name="api-key", auto_error=False)
+api_key_header = APIKeyHeader(name="x-api-key", auto_error=False)
 
 # Load llm
 model = ai.load_model()
@@ -26,14 +29,28 @@ def_collection = client.get_collection("defs")
 
 thm_collection = client.get_collection("thms")
 
+def get_api_key(
+    api_key_query: str = Security(api_key_query),
+    api_key_header: str = Security(api_key_header),
+) -> str:
+    if api_key_query in API_KEYS:
+        return api_key_query
+    if api_key_header in API_KEYS:
+        return api_key_header
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid or missing API Key",
+    )
+
 # Query structure
 class Query(BaseModel):
     prompt: str
     temp: float = 0
     messages: list | None = None
 
+
 @app.get('/')
-def read_root():
+def read_root(api_key: str = Security(get_api_key)):
     return {
         "status": "OK",
         "model": ai.get_model()
@@ -41,7 +58,7 @@ def read_root():
 
 # Main endpoint for responding to queries
 @app.post('/query')
-async def query(query: Query):
+async def query(query: Query, api_key: str = Security(get_api_key)):
 
     defs = def_collection.query(
         query_texts=[query.prompt],
