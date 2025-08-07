@@ -13,6 +13,7 @@ SYSTEM_PROMPT = {"role": "system", "content": (
 def get_model():
     return MODEL_PATH.split('/')[-1]
 
+
 def load_model():
     return Llama(
         model_path=MODEL_PATH,
