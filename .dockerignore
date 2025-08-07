@@ -1,0 +1,8 @@
+scripts/
+final_data/
+__pycache__/
+*.pyc
+.venv/
+app/models/
+app/vectordb/
+

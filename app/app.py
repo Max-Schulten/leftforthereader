@@ -8,6 +8,8 @@ import ai
 import os
 import dotenv
 
+VECTORDB_PATH = os.getenv("VECTORDB_PATH", "app/vectordb")
+
 # Initialize fast api application
 app = FastAPI()
 
@@ -23,7 +25,7 @@ api_key_header = APIKeyHeader(name="x-api-key", auto_error=False)
 model = ai.load_model()
 
 # Initialize the vector database using persistent vectordb
-client = chromadb.PersistentClient(path = "app/vectordb")
+client = chromadb.PersistentClient(path = VECTORDB_PATH)
 
 def_collection = client.get_collection("defs")
 
