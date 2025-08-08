@@ -10,11 +10,13 @@ import dotenv
 import time
 import asyncio
 from functools import partial
+from uuid import uuid4
+from pprint import pprint
 
 VECTORDB_PATH = os.getenv("VECTORDB_PATH", "app/vectordb")
 
 # Counter for number of requests handling
-n_requests = 0
+requests = {}
 
 # Initialize fast api application
 app = FastAPI()
@@ -78,12 +80,19 @@ def read_root(api_key: str = Security(get_api_key)):
 # Main endpoint for responding to queries
 @app.post('/query')
 async def query(query: Query, api_key: str = Security(get_api_key)):
-    global n_requests
-    n_requests += 1
-    print(f"+NEW REQUEST: NUMBER OF REQUESTS ON SERVER: {n_requests}")
-    print("Received AI Query")
+    global requests
+    request_id = str(uuid4())
+    requests[request_id] = {
+        "received": time.time(),
+        "prompt": query.prompt
+    }
+
+    print(f"+NEW REQUEST: NUMBER OF REQUESTS ON SERVER: {len(requests)}")
+    pprint(
+        requests
+    )
     loop = asyncio.get_event_loop()
-    print(f"Loop started: {loop}")
+
     vector_start = time.time()
     defs = def_collection.query(
         query_texts=[query.prompt],
@@ -95,8 +104,8 @@ async def query(query: Query, api_key: str = Security(get_api_key)):
         n_results=1
     )
     
-    print(f"Spent {round(time.time() - vector_start, 3)}s Retrieving Documents")
-
+    requests[request_id]["rag_duration"] = round(time.time() - vector_start, 2)
+    
     context = utils.create_context_window(thms=thms, defs=defs)
 
     params = {
@@ -110,8 +119,15 @@ async def query(query: Query, api_key: str = Security(get_api_key)):
 
     response = await loop.run_in_executor(None, partial(ai.query, **params)) # async execution so I can accept multiple requests
     
-    n_requests -= 1
-    print(f"-REQUEST FINISHED: NUMBER OF REQUESTS ON SERVER: {n_requests}")
+    if not response: print(f"NO RESPONSE: {requests[request_id]}")
+    
+    print(f"-REQUEST FINISHED IN {round(time.time() - requests[request_id]["received"], 2)}s : NUMBER OF REQUESTS ON SERVER : {len(requests)}")
+    
+    del requests[request_id]
+    
+    pprint(
+        requests
+    )
     return response
 
 if __name__ == "__main__":
