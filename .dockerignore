@@ -5,4 +5,5 @@ __pycache__/
 .venv/
 app/models/
 app/vectordb/
-
+models
+vectordb

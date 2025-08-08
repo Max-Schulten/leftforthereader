@@ -109,8 +109,8 @@ async def query(query: Query, api_key: str = Security(get_api_key)):
     context = utils.create_context_window(thms=thms, defs=defs)
 
     params = {
-        "prompt": query.prompt + " In 2 sentences.", # In testing, this quantization will massively overshoot length targets. This really helped with long response times
-        "rag_context": context,                      # so this acts as a firm nudge towards shorter responses to help with the scarce resources of a VPS
+        "prompt": query.prompt + " Respond in 2 sentences.", # In testing, this quantization will massively overshoot length targets. This really helped with long response times
+        "rag_context": context,                              # so this acts as a firm nudge towards shorter responses to help with the scarce resources of a VPS
         "model": model,
         "messages": query.messages
     }
@@ -121,7 +121,7 @@ async def query(query: Query, api_key: str = Security(get_api_key)):
     
     if not response: print(f"NO RESPONSE: {requests[request_id]}")
     
-    print(f"-REQUEST FINISHED IN {round(time.time() - requests[request_id]["received"], 2)}s : NUMBER OF REQUESTS ON SERVER : {len(requests)}")
+    print(f"-REQUEST FINISHED IN {round(time.time() - requests[request_id]['received'], 2)}s : NUMBER OF REQUESTS ON SERVER : {len(requests)}")
     
     del requests[request_id]
     

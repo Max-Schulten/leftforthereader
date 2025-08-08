@@ -23,7 +23,7 @@ def load_model():
     if _model is None:
         _model = Llama(
             model_path=MODEL_PATH,
-            n_ctx=1024,
+            n_ctx=2048,
             n_threads=4,
             verbose=False
         )
